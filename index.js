@@ -6,8 +6,7 @@ var app = express();
 var mkdirp = require('mkdirp');
 var fs = require('fs');
 var cheerio = require('cheerio');
-var subReddits = ['memes', 'funny', 'pics', 'gifs', 'WTF', '4chan'];
-
+var subReddits = jsonfile.readFileSync('names.json').names;
 
 
 function scrapeSubReddit(name, filename) {
@@ -21,10 +20,15 @@ function scrapeSubReddit(name, filename) {
 
       var index = 0;
       $('.thing a').each(function(i, elem) {
-          var href = elem.attribs.href;
-          var isImgLink = /http:\/\/i\.imgur\.com\/(.)*/;
+        var href = elem.attribs.href;
+        var isImgLink = /http:\/\/i\.imgur\.com\/(.)*/;
 
         if (isImgLink.test(href)) {
+
+          mkdirp('scrapes/' + name + '/', function(err) {
+            if (err) console.log("RIP");
+          });
+
           links[index] = href;
           jsonfile.writeFileSync(filename, links);
 
@@ -32,20 +36,19 @@ function scrapeSubReddit(name, filename) {
         }
       });
     } else {
-      console.log(colors.red('Seems like something went wrong: ' + err));
+      console.log(colors.red('Seems like something went wrong: ' + error));
     }
   });
 }
 
 
-
 function scrape(subreddits) {
   var date = new Date();
   for (var i = 0; i < subreddits.length; i++) {
-    mkdirp('scrapes/' + subreddits[i] + '/', function(err) {
-      if(err) { console.log("something went wrong: " + colors.red(err));}
-    });
-    scrapeSubReddit(subreddits[i], 'scrapes/' + subreddits[i] + '/' + subreddits[i] + '-' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + '.json');
+      // TODO: Don't generate directory if there are no images
+
+      scrapeSubReddit(subreddits[i], 'scrapes/' + subreddits[i] + '/' + subreddits[i] + '-' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + '.json');
+
   }
 }
 
