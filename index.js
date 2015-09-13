@@ -6,18 +6,19 @@ var app = express();
 var mkdirp = require('mkdirp');
 var fs = require('fs');
 var cheerio = require('cheerio');
-var subReddits = jsonfile.readFileSync('names.json').names;
+var subReddits = jsonfile.readFileSync('links.json').names;
 
 
 function scrapeSubReddit(name, filename) {
   request('https://www.reddit.com/r/' + name, function(error, response, body) {
     if (!error) {
 
+
       var $ = cheerio.load(body);
       var links = Object.create(null);
 
-      console.log(colors.green('Scraping subreddit with name: ' + colors.random(name)));
-
+      console.log(colors.gray('Scraping subreddit with name: ' + colors.cyan(name)));
+      var containsImgs = false;
       var index = 0;
       $('.thing a').each(function(i, elem) {
         var href = elem.attribs.href;
@@ -31,25 +32,29 @@ function scrapeSubReddit(name, filename) {
 
           links[index] = href;
           jsonfile.writeFileSync(filename, links);
-
+          containsImgs = true;
           index++;
         }
       });
+      if(containsImgs) console.log(colors.gray('Subreddit with name ') + colors.magenta(name) + colors.gray(' contains images, saving to disk...'));
     } else {
-      console.log(colors.red('Seems like something went wrong: ' + error));
+      console.log('Seems like something went wrong: ' + error + ', While trying to request subreddit with name: ' + name);
     }
   });
+
 }
 
 
 function scrape(subreddits) {
   var date = new Date();
   for (var i = 0; i < subreddits.length; i++) {
-      // TODO: Don't generate directory if there are no images
-
-      scrapeSubReddit(subreddits[i], 'scrapes/' + subreddits[i] + '/' + subreddits[i] + '-' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + '.json');
-
+    (function(i) {
+      setTimeout(function() {
+        scrapeSubReddit(subreddits[i], 'scrapes/' + subreddits[i] + '/' + subreddits[i] + '-' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + '.json');
+      }, i * 300);
+    })(i);
   }
+
 }
 
 
