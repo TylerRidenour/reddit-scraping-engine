@@ -1,0 +1,2 @@
+Write cli - todo
+Fix bug where the two first links are the same - done

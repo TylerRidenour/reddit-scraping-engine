@@ -30,7 +30,7 @@ function scrapeSubReddit(name, filename) {
             if (err) console.log("RIP");
           });
 
-          links[index] = href;
+          if(index > 0) links[index] = href;
           jsonfile.writeFileSync(filename, links);
           containsImgs = true;
           index++;
