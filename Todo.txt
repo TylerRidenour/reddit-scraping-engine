@@ -1,2 +1,3 @@
 Write cli - todo
-Fix bug where the two first links are the same - done
+Fix bug where there are dupes - done
+find site to scrape a massive amount of sub reddits off -  todo
