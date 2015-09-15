@@ -1,3 +1,4 @@
 Write cli - todo
-Fix bug where there are dupes - done
+Fix bug where there are dupes(there we 2 of the same links in the html) - done
 find site to scrape a massive amount of sub reddits off -  todo
+Add so it scrapes images from the imgur link if it is not a direct imgur img link - todo

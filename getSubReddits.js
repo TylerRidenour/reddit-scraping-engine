@@ -9,10 +9,10 @@ for (var i = 2; i < 33; i++) {
     var $ = cheerio.load(body);
     var subRedditNames = [];
     $('.listing-item').each(function(i, elem) {
-      var subredditName = elem.attribs["data-target-subreddit"]
+      var subredditName = elem.attribs["data-target-subreddit"];
       subRedditNames.push(subredditName);
     });
-    jsonfile.writeFileSync('links.json', {
+    jsonfile.writeFileSync('names.json', {
       names: subRedditNames
     });
   });
